@@ -1,5 +1,9 @@
-package com.example.springtest1;
+package com.example.springtest1.controller;
 
+import com.example.springtest1.dto.UserRequest;
+import com.example.springtest1.dto.UserResponse;
+import com.example.springtest1.model.User;
+import com.example.springtest1.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +22,7 @@ public class UserController {
 
     //@GetMapping("/api/users")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
         //return ResponseEntity.ok(userService.fetchAllUsers());
         //return ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
         return ResponseEntity.status(HttpStatus.OK).body(userService.fetchAllUsers());
@@ -27,7 +31,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id){
         //ResponseEntity
        // HttpStatus
 //        User user = userService.fetchUser(id);
@@ -40,8 +44,8 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user){
-        userService.addUser(user);
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest){
+        userService.addUser(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(user.toString());
     }
 
