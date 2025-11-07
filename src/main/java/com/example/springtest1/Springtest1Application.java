@@ -10,5 +10,10 @@ public class Springtest1Application {
         SpringApplication.run(Springtest1Application.class, args);
     }
 
+//    public static class UserController {
+//        public List<User> getAllUsers(){
+//            return;
+//        }
+//    }
 }
 
