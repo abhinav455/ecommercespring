@@ -3,6 +3,7 @@ package com.example.springtest1.service;
 import com.example.springtest1.dto.AddressDTO;
 import com.example.springtest1.dto.UserRequest;
 import com.example.springtest1.dto.UserResponse;
+import com.example.springtest1.model.Address;
 import com.example.springtest1.repository.UserRepository;
 import com.example.springtest1.model.User;
 import lombok.RequiredArgsConstructor;
@@ -47,12 +48,24 @@ public class UserService {
         user.setEmail(userRequest.getEmail());
         user.setPhone(userRequest.getPhone());
 
+        if(userRequest.getAddress()!=null){
+            Address address= new Address();
+            address.setCity(userRequest.getAddress().getCity());
+            address.setStreet(userRequest.getAddress().getStreet());
+            address.setState(userRequest.getAddress().getState());
+            address.setZipcode(userRequest.getAddress().getZipcode());
+            address.setCountry(userRequest.getAddress().getCountry());
+
+            user.setAddress(address);
+
+        }
+
     }
 
 
 
 
-    public boolean updateUser(Long id, User updatedUser){
+    public boolean updateUser(Long id, UserRequest updatedUserRequest){
 //        return userList.stream().filter(user -> user.getId().equals(id))
 //                .findFirst().map(existingUser-> {
 //                    existingUser.setFirstName(updatedUser.getFirstName());
@@ -61,8 +74,9 @@ public class UserService {
 //                }).orElse(false);
 
         return userRepository.findById(id).map(existingUser-> {
-                    existingUser.setFirstName(updatedUser.getFirstName());
-                    existingUser.setLastName(updatedUser.getLastName());
+//                    existingUser.setFirstName(updatedUser.getFirstName());
+//                    existingUser.setLastName(updatedUser.getLastName());
+                    updateUserFromRequest(existingUser, updatedUserRequest);
                     userRepository.save(existingUser);
                     return true;
                 }).orElse(false);

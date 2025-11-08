@@ -73,6 +73,122 @@ Then you iterate stream, memory stays small.
 ----------------------------------
 
 
+controller always uses UserRequest and UserResponse, never User directly
+thus no model in controller
+
+inject
+1)make final and constructor to get the object
+2) or @Autowired spring
+3) lombok @RequiredArgsConstructor
+
+
+-----------------------------------
+
+return users.stream()
+.filter(...)
+.findFirst()
+.map(u -> { u.setName("x"); return true; })
+.orElse(false);
+flow:
+case 1: element found in stream
+findFirst() returns Optional<User> with a value
+
+then .map(...) is executed → mapping returns Optional<Boolean> with value true
+
+then .orElse(false) → since Optional already has value → returns that value (true)
+
+result = true
+orElse(false) is not executed, it just checks "do I have a value? yes → return it."
+
+case 2: no element found in stream (empty)
+findFirst() returns Optional.empty
+
+map is not executed (map is skipped because Optional is empty)
+
+then .orElse(false) → Optional has no value → so it returns false
+
+result = false
+
+You can rewrite mentally like:
+java
+Copy code
+Optional<Boolean> opt = users.findFirst().map(...);
+if(opt.hasValue) {
+return opt.value;
+} else {
+return false;
+}
+
+
+--------------------------------------
+
+ - can add @Transactional to whole service class or to a method inside it
+
+
+ChatGPT said:
+
+@Transactional is a Spring annotation that says:
+
+run this method inside a database transaction
+
+what does that mean?
+
+A DB transaction is like doing multiple DB operations as one unit.
+
+Example without transaction:
+
+update A
+update B
+update C
+--> if error in C → A and B are already committed. data becomes inconsistent.
+
+
+With transaction:
+
+BEGIN
+update A
+update B
+update C
+COMMIT
+
+
+if C fails:
+
+ROLLBACK → revert everything
+
+
+so DB stays consistent.
+
+what @Transactional does in Spring:
+
+opens a transaction at method start
+
+all DB calls inside run under same transaction
+
+if method ends normally → commit
+
+if exception occurs → rollback
+
+Where to use it?
+
+put on service layer:
+
+@Service
+public class UserService {
+@Transactional
+public void updateUserAddress(...) {
+userRepo.save(...)
+addressRepo.save(...)
+// both are atomic now
+}
+}
+
+-------------------------------
+
+
+BigDecimal totalPrice = cartItems.stream()
+  .map(CartItem::getPrice)
+  .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
 
