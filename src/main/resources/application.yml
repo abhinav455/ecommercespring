@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: springtest1
+#server.port=9090
+  datasource:
+#    url: jdbc:h2:mem:test
+##spring.datasource.driverClassName=org.h2.Driver
+##spring.datasource.username=sa
+##spring.datasource.password=
+##spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+#  h2:
+#    console:
+#      enabled: true
+#
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#       ddl-auto: create
+      url: jdbc:postgresql://localhost:5432/ecomdb
+      username: abhinav
+      password: abhinav
+  jpa:
+      database: POSTGRESQL
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: beans,health
+
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+
+server:
+  shutdown: graceful
+
+info:
+    app:
+      name: MyNewApp
+      description: App built by us
+      version: 1.0.0
+
+
+
+
+
